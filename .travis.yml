@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+#usiamo il file di sviluppo perchè solo con quello possiamo eseguire i test
+before_install:
+  - docker build -t biasifrancesco/react-test -f ./client/Dockerfile.dev ./client
+
+# ogni comando fallito fallirà anche travis ci, potremmo avere piu comandi per eseguire piu test
+script:
+  - docker run biasifrancesco/react-test npm test -- --coverage #per fare in modo che una volta finiti termini il comando 
+  
+#una volta eseguiti con successo andiamo a costruire le immagini per ciascun servizio
+after_success:
+  - docker build -t biasifrancesco/multi-client ./client
+  - docker build -t biasifrancesco/multi-nginx ./nginx
+  - docker build -t biasifrancesco/multi-server ./server
+  - docker build -t biasifrancesco/multi-worker ./worker
+
+  #Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin #non avendo un wizard echo ci restuisce 
+  #Take those images and push them to docker hub
+  - docker push biasifrancesco/multi-client
+  - docker push biasifrancesco/multi-nginx
+  - docker push biasifrancesco/multi-server
+  - docker push biasifrancesco/multi-worker
