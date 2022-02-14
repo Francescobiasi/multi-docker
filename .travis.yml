@@ -1,3 +1,4 @@
+language: generic 
 sudo: required
 services:
   - docker
@@ -5,7 +6,7 @@ services:
 #usiamo il file di sviluppo perchè solo con quello possiamo eseguire i test
 before_install:
   - docker build -t biasifrancesco/react-test -f ./client/Dockerfile.dev ./client
-  
+
 # ogni comando fallito fallirà anche travis ci, potremmo avere piu comandi per eseguire piu test
 script:
   - docker run -e CI=true biasifrancesco/react-test npm test #per fare in modo che una volta finiti termini il comando 
