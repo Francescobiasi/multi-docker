@@ -9,7 +9,6 @@ before_install:
 
 # ogni comando fallito fallirà anche travis ci, potremmo avere piu comandi per eseguire piu test
 script:
-  - docker run -e CI=true biasifrancesco/react-test npm test #per fare in modo che una volta finiti termini il comando 
   
 #una volta eseguiti con successo andiamo a costruire le immagini per ciascun servizio
 after_success:
