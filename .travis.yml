@@ -1,26 +1,24 @@
-language: generic 
 sudo: required
-services: 
+language: generic
+
+services:
   - docker
 
-#usiamo il file di sviluppo perchè solo con quello possiamo eseguire i test
 before_install:
-  - docker build -t biasifrancesco/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t francescobiasi/react-test -f ./client/Dockerfile.dev ./client
 
-# ogni comando fallito fallirà anche travis ci, potremmo avere piu comandi per eseguire piu test
 script:
-  - docker run -e CI=true biasifrancesco/react-test npm test
-#una volta eseguiti con successo andiamo a costruire le immagini per ciascun servizio
-after_success:
-  - docker build -t biasifrancesco/multi-client ./client
-  - docker build -t biasifrancesco/multi-nginx ./nginx
-  - docker build -t biasifrancesco/multi-server ./server
-  - docker build -t biasifrancesco/multi-worker ./worker
+  - docker run -e CI=true francescobiasi/react-test npm test
 
-  #Log in to the docker CLI 
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin #non avendo un wizard echo ci restuisce 
-  #Take those images and push them to docker hub
-  - docker push biasifrancesco/multi-client
-  - docker push biasifrancesco/multi-nginx
-  - docker push biasifrancesco/multi-server
-  - docker push biasifrancesco/multi-worker
+after_success:
+  - docker build -t francescobiasi/multi-client ./client
+  - docker build -t francescobiasi/multi-nginx ./nginx
+  - docker build -t francescobiasi/multi-server ./server
+  - docker build -t francescobiasi/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push francescobiasi/multi-client
+  - docker push francescobiasi/multi-nginx
+  - docker push francescobiasi/multi-server
+  - docker push francescobiasi/multi-worker
