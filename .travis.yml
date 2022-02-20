@@ -1,6 +1,6 @@
 language: generic 
 sudo: required
-services:
+services: 
   - docker
 
 #usiamo il file di sviluppo perchè solo con quello possiamo eseguire i test
